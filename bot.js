@@ -31,14 +31,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         args = args.splice(1);
         switch(cmd) {
             // !ping
-            case 'ping':
-                bot.sendMessage({to: channelID,message: 'test'});
+            case '可撥':
+                bot.sendMessage({to: channelID,message: '可撥可撥可撥鼠'});
             break;
-            case 'songtest':
-                bot.sendMessage({to: channelID,message: 'https://www.youtube.com/watch?v=oflv-B7vV_A'});
+            case 'STT':
+                bot.sendMessage({to: channelID,message: 'test'});
             break; 
             default:
-                bot.sendMessage({to: channelID,message: '公三小!?'});
+                bot.sendMessage({to: channelID,message: '哩西勒公三小!?'});
             break;
          }
      }
