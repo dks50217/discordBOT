@@ -53,7 +53,6 @@ bot.on("channelCreate", function(channel){
 bot.on('message', function (user, userID, channelID, message, evt) { 
     console.log('user: ' + user + ' userID: ' + userID);
     var prefix = message.substring(0, 1);
-    
     if (prefix == '!') {
         var args = message.substring(1).split(' ');
         var cmd = args[0];
@@ -79,7 +78,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 }
                 else
                 {
-                    bot.sendMessage({to: channelID,message: randomMsg});
+                    bot.sendMessage({to: channelID,message: randomMsg, tts: true });
                 }
             }
 
@@ -150,6 +149,26 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
         SaveJson();
      }
+     else if(prefix == "*")
+     {
+        var args = message.substring(1).split(' ');
+        var cmd = args[0];
+        let Obj = JsonFile.filter(r=>r.request == cmd)[0];
+        let Str = "";
+          
+        if(Obj)
+        {
+            Obj.response.forEach(function(item,index){
+                Str += index + '. ' + item + "\n";
+            })
+
+            bot.sendMessage({to: channelID,message: Str});
+        }
+        else
+        {
+            bot.sendMessage({to: channelID,message: cmd + ' 項目不存在' });
+        }
+     }
      else
      {
         console.log(message)
@@ -162,7 +181,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
         else if(message.indexOf('ㄌㄐ')>=0){
             var msgsplit = message.split(" ");
-            bot.sendMessage({to: channelID,message: '說你呢! '+ msgsplit[1]});
+            //bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
         }
      }
 });
@@ -172,7 +191,8 @@ bot.on("channelCreate", function(channel){
 });
 
 bot.on('disconnect', function(evt){
-    bot.sendMessage({to: '701815724611469372',message:'The WebSocket has closed and will no longer attempt to reconnect'});  
+    //bot.sendMessage({to: '701815724611469372',message:'可撥鼠離線了'});
+    console.log('可撥鼠離線了');  
 });
 
 bot.on("reconnecting", function(evt){
@@ -191,7 +211,16 @@ function SaveJson()
 }
 
 
+var minute = new Date().getMinutes(),nextRefresh = (15 - (minute % 15)) * 60 * 1000;
 
+setTimeout( function() 
+{ 
+    logger.info(bot.username + ' - (' + bot.id + ')' + 'mins: ' + minute);
+}, nextRefresh );
 
+// setInterval(function(){ reload_page(); },60*60000);
 
-
+// function tick()
+// {
+//     logger.info(bot.username + ' - (' + bot.id + ')');
+// }

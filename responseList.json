@@ -1,1 +1,110 @@
-[{"GUID":"3e021ec5-a7d5-490e-abae-d69a8ce5a6e7","request":"可撥","response":["可撥可撥可撥鼠","夜裡晶珂","我在挖土","你好我是可撥鼠","渣女","真的很可撥","晴空我的","我愛情空"],"pictureFlag":false,"tagFlag":false},{"GUID":"2a1b59f2-b5bd-4115-8f3b-335e5925efbf","request":"明日香","response":["你阿罵","靠北喔","EEEEE"],"pictureFlag":false,"tagFlag":false},{"GUID":"2a1b59f2-b5bd-4115-8f3b-111e5925efbf","request":"可撥鼠","response":["不要嚇我","有夠可撥","我就可撥"],"pictureFlag":true,"url":["701825381791170691.png?v=1"],"tagFlag":false},{"GUID":"770beccf-97e4-4d07-af10-06a14d36c4f6","request":"兒子","response":["養天羽心比較好","<@622371393224441875>"],"pictureFlag":false,"tagFlag":false},{"GUID":"f1f73f68-7b9b-426e-b77f-f7b26f521f97","request":"星耀","response":["第一黑魔"],"pictureFlag":false,"tagFlag":false},{"GUID":"627f50df-ba7c-45aa-a9cd-1069e6d01bf3","request":"月暮","response":["粉紅色浴巾"],"pictureFlag":false,"tagFlag":false},{"GUID":"cfad3268-c2e9-4d42-88b9-f502a1bfa097","request":"大便當","response":["<@547446280725463050>","我愛嗑大便當"],"pictureFlag":false,"tagFlag":false},{"GUID":"d0a7a570-2608-4c22-a367-e3617e245dcc","request":"瑪莎","response":["<@!536554688254967821>"],"pictureFlag":false,"tagFlag":false},{"GUID":"fd174e5f-ea3f-4561-88bd-8f32b0c45323","request":"春之音","response":["來搶聖物阿"],"pictureFlag":false,"tagFlag":false}]
+[
+    {
+      "GUID": "3e021ec5-a7d5-490e-abae-d69a8ce5a6e7",
+      "request": "可撥",
+      "response": [
+        "可撥可撥可撥鼠",
+        "我在挖土",
+        "你好我是可撥鼠",
+        "真的很可撥",
+        "晴空我的",
+        "我愛晴空",
+        "夜裡晶珂",
+        "我是夜裡晶珂",
+        "我就ㄌㄐ",
+        "渣女",
+        "我就可撥"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "2a1b59f2-b5bd-4115-8f3b-335e5925efbf",
+      "request": "明日香",
+      "response": [
+        "你阿罵",
+        "靠北喔",
+        "EEEEE"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "2a1b59f2-b5bd-4115-8f3b-111e5925efbf",
+      "request": "可撥鼠",
+      "response": [
+        "不要嚇我",
+        "有夠可撥",
+        "我就可撥"
+      ],
+      "pictureFlag": true,
+      "url": [
+        "701825381791170691.png?v=1"
+      ],
+      "tagFlag": false
+    },
+    {
+      "GUID": "770beccf-97e4-4d07-af10-06a14d36c4f6",
+      "request": "兒子",
+      "response": [
+        "養天羽心超級好",
+        "我是藍國小毛驢"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "f1f73f68-7b9b-426e-b77f-f7b26f521f97",
+      "request": "星耀",
+      "response": [],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "627f50df-ba7c-45aa-a9cd-1069e6d01bf3",
+      "request": "月暮",
+      "response": [
+        "粉紅色浴巾"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "cfad3268-c2e9-4d42-88b9-f502a1bfa097",
+      "request": "大便當",
+      "response": [
+        "<@547446280725463050>",
+        "我愛嗑大便當",
+        "老公主"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "d0a7a570-2608-4c22-a367-e3617e245dcc",
+      "request": "瑪莎",
+      "response": [],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "fd174e5f-ea3f-4561-88bd-8f32b0c45323",
+      "request": "春之音",
+      "response": [
+        "來搶聖物阿",
+        "黃沙漠KC 9487",
+        "又有人墜機ㄌ"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    },
+    {
+      "GUID": "a142e260-53a5-42a8-945f-fb75144ac1a0",
+      "request": "毛兒子",
+      "response": [
+        "藍國毛驢小養B"
+      ],
+      "pictureFlag": false,
+      "tagFlag": false
+    }
+  ]
