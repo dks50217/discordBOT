@@ -1,7 +1,10 @@
+## About
+
+這是個可撥鼠機器人
+
+![alt text](https://cdn.discordapp.com/emojis/701825381791170691.png?v=1)
 
 ## Start
-
-
 > install node_modules
 ```cmd
 npm install
