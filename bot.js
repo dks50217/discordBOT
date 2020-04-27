@@ -17,7 +17,8 @@ logger.level = 'debug';
 // 初始化 Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
-   autorun: true
+   autorun: true,
+   autoReconnect:true
 });
 
 //Server 資訊
@@ -38,12 +39,6 @@ bot.on('ready', function (evt) {
 });
 
 
-
-function GetUserCnt(){
-    serverInfo.members = Object.keys(bot.servers['701636190482202624'].members);
-    serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
-}
-
 bot.on("channelCreate", function(channel){
     console.log(`channelCreate: ${channel}`);
 });
@@ -53,10 +48,10 @@ bot.on("channelCreate", function(channel){
 bot.on('message', function (user, userID, channelID, message, evt) { 
     console.log('user: ' + user + ' userID: ' + userID);
     var prefix = message.substring(0, 1);
-    if (prefix == '!') {
+    if (prefix == '!') {     
         var args = message.substring(1).split(' ');
         var cmd = args[0];
-        var randomMsg = "";          
+        var randomMsg = "",randomPic = "";         
         args = args.splice(1);         
         var Obj = JsonFile.filter(r=>r.request == cmd)[0];
         if(Obj)
@@ -64,15 +59,17 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             if(Array.isArray(Obj.response))
             {
                 randomMsg = Obj.response[Math.floor(Math.random() * Obj.response.length)]; 
-
+ 
                 if(Obj.pictureFlag)
                 {
+                    randomPic = Obj.url[Math.floor(Math.random() * Obj.url.length)]; 
+                    
                     bot.sendMessage({
                         to:channelID,
                         embed: {
                             color: 3447003,
                             description: randomMsg,
-                            image: {url: "https://cdn.discordapp.com/emojis/" + Obj.url}
+                            image: {url: "https://cdn.discordapp.com/emojis/" + randomPic}
                         }
                     });
                 }
@@ -83,7 +80,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             }
 
             if(randomMsg == "夜裡晶珂"){
-                bot.uploadFile({to: channelID,file:'./1587170283732.jpg'});         
+                bot.uploadFile({to: channelID,file:'./Image/1587170283732.jpg'});         
             }
         }
         else
@@ -95,6 +92,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      else if(prefix == '+' || prefix == '-')
      {
         let EditArray = message.split(' ');
+        let Regex = /^-(play|next|p|q)/;
+
+        if(EditArray[0].match(Regex)){       
+            return false;
+        }
+
         if(prefix == "+")
         {
             keyName = EditArray[0].replace('+','');
@@ -105,10 +108,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             keyName = EditArray[0].replace('-','');
         }
 
+
+
         let NewValue = EditArray[1];
         let Obj = JsonFile.filter(d=>d.request == keyName)[0]
 
-        if(Obj){
+        if(Obj)
+        {
             console.log('Obj',Obj)  
             let IsExist = Obj.response.filter(msg=>msg == NewValue);
 
@@ -117,24 +123,48 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 if(prefix == "-")
                 {
                     Obj.response = Obj.response.filter(msg => msg !== NewValue);
-                    bot.sendMessage({to: channelID,message: NewValue +' 已移除' });
+                    bot.sendMessage({
+                        to:channelID,
+                        embed: {
+                            color: 3447003,
+                            description: NewValue +' 已移除'
+                        }
+                    });
                 }
                 else
                 {
-                    bot.sendMessage({to: channelID,message: NewValue +' 已存在' });
+                    bot.sendMessage({
+                        to:channelID,
+                        embed: {
+                            color: 3447003,
+                            description: NewValue +' 已存在'
+                        }
+                    });
                 }
             }
-            else if(prefix == "+")
+            else if(prefix === "+")
             {  
-                Obj.response.push(NewValue);
-                bot.sendMessage({to: channelID,message: NewValue  +' 已加入' });
+                Obj.response.push(NewValue);              
+                bot.sendMessage({
+                    to:channelID,
+                    embed: {
+                        color: 3447003,
+                        description: NewValue +' 已加入'
+                    }
+                });
             }
             else
             {
-                bot.sendMessage({to: channelID,message: NewValue  +' 不存在，無法移除' });
+                bot.sendMessage({
+                    to:channelID,
+                    embed: {
+                        color: 15158332,
+                        description: NewValue  +' 不存在，無法移除'
+                    }
+                });
             }
         }
-        else
+        else if(prefix == "+")
         {
             let NewObj =  {
                 "GUID": _uuid(),
@@ -145,7 +175,23 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               }
             NewObj.response.push(NewValue);
             JsonFile.push(NewObj);  
-            bot.sendMessage({to: channelID,message: keyName + ' ' + NewValue +' 已加入' });
+            bot.sendMessage({
+                to:channelID,
+                embed: {
+                    color: 3447003,
+                    description:  keyName + ' ' + NewValue +' 已加入' 
+                }
+            });
+        }
+        else
+        {
+            bot.sendMessage({
+                to:channelID,
+                embed: {
+                    color: 15158332,
+                    description:  keyName + ' ' + '母項不存在，無法移除' 
+                }
+            });
         }
         SaveJson();
      }
@@ -176,12 +222,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         if(message.indexOf('笑死') >= 0){
             bot.sendMessage({to: channelID,message: 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'});
         }
-        else if(message.indexOf('兔子')>=0){
-            bot.sendMessage({to: channelID,message: '看起來好可撥'});
-        }
-        else if(message.indexOf('ㄌㄐ')>=0){
+        else if(message.indexOf('ㄌㄐ')>=0 && prefix !="*"){
             var msgsplit = message.split(" ");
-            //bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
+            bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
         }
      }
 });
@@ -191,12 +234,12 @@ bot.on("channelCreate", function(channel){
 });
 
 bot.on('disconnect', function(evt){
-    //bot.sendMessage({to: '701815724611469372',message:'可撥鼠離線了'});
     console.log('可撥鼠離線了');  
 });
 
 bot.on("reconnecting", function(evt){
-    //bot.sendMessage({to: '701815724611469372',message:'client tries to reconnect to the WebSocket'});  
+    
+    console.log('client tries to reconnect to the WebSocket');  
 });
 
 function _uuid() {
@@ -210,17 +253,24 @@ function SaveJson()
     });
 }
 
+function GetUserCnt(){
+    serverInfo.members = Object.keys(bot.servers['701636190482202624'].members);
+    serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
+}
 
-var minute = new Date().getMinutes(),nextRefresh = (15 - (minute % 15)) * 60 * 1000;
 
-setTimeout( function() 
-{ 
-    logger.info(bot.username + ' - (' + bot.id + ')' + 'mins: ' + minute);
-}, nextRefresh );
+let myVar = setInterval(function(){myTimer()},1000);
 
-// setInterval(function(){ reload_page(); },60*60000);
+function myTimer()
+{
+    var d=new Date();
+    var t=d.toLocaleTimeString();
+    console.log(t);
+}
 
-// function tick()
-// {
-//     logger.info(bot.username + ' - (' + bot.id + ')');
-// }
+// var minute = new Date().getMinutes(),nextRefresh = (15 - (minute % 15)) * 60 * 1000;
+
+// setTimeout( function() 
+// { 
+//     logger.info(bot.username + ' - (' + bot.id + ')' + 'mins: ' + minute);
+// }, nextRefresh );
