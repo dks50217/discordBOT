@@ -1,0 +1,77 @@
+[
+    {
+        "relicName":"聖水",
+        "place":"黃叢林(KYN)",
+        "endDate":"2020-04-28 16:03:00"
+    },
+    {
+        "relicName":"聖甲",
+        "place":"黃叢林(KYN)",
+        "endDate":"2020-04-28 16:15:00"
+    },
+    {
+        "relicName":"Lv2聖珠",
+        "place":"黃叢林(KYN)",
+        "endDate":"2020-04-28 16:25:00"
+    },
+    {
+        "relicName":"Lv2弓",
+        "place":"黃阿姆(AMK)",
+        "endDate":"2020-04-28 17:14:00"
+    },
+    {
+        "relicName":"劍",
+        "place":"藍阿姆",
+        "endDate":"2020-04-28 17:20:00"
+    },
+    {
+        "relicName":"Lv2經",
+        "place":"藍阿姆(AMK)",
+        "endDate":"2020-04-28 18:27:00"
+    },
+	{
+        "relicName":"槍香火杯",
+        "place":"紅叢林",
+        "endDate":"2020-04-28 18:37:00"
+    },
+	{
+        "relicName":"甲",
+        "place":"藍阿姆(AMK)",
+        "endDate":"2020-04-28 18:38:00"
+    },
+	{
+        "relicName":"雙杖.甲",
+        "place":"藍沙漠",
+        "endDate":"2020-04-28 18:47:00"
+    },
+	{
+        "relicName":"水",
+        "place":"紅KC",
+        "endDate":"2020-04-28 18:50:00"
+    },
+	{
+        "relicName":"杯",
+        "place":"紅KC",
+        "endDate":"2020-04-28 19:02:00"
+    },
+	{
+        "relicName":"LV2珠",
+        "place":"藍阿姆",
+        "endDate":"2020-04-28 19:07:00"
+    },
+	{
+        "relicName":"秤",
+        "place":"紅沙漠",
+        "endDate":"2020-04-28 19:43:00"
+    },
+	{
+        "relicName":"盾",
+        "place":"黃沙漠",
+        "endDate":"2020-04-28 20:13:00"
+    },
+	{
+        "relicName":"LV2弓",
+        "place":"紅阿姆",
+        "endDate":"2020-04-28 20:24:00"
+    }
+]

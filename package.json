@@ -4,12 +4,13 @@
 	"description": "My own Discord bot",
 	"main": "bot.js",
 	"author": "Michael",
-	"scripts":{
-		"start":"node bot.js"
+	"scripts": {
+		"start": "node bot.js"
 	},
 	"dependencies": {
 		"discord.io": "github:woor/discord.io#gateway_v6",
 		"edit-json-file": "^1.4.0",
+		"moment": "^2.24.0",
 		"winston": "^3.2.1"
 	}
 }

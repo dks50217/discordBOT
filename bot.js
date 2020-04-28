@@ -3,8 +3,11 @@ var logger = require('winston');
 var auth = require('./auth.json');
 const fs = require('fs');
 const fileName = './responseList.json';
+const relicfileName = './Relic.json';
 var JsonFile = require(fileName);
-var _DefaultMsg = "哩西勒公三小!? ";
+var ConfigJson = require('./config.json');
+var RelicJson = require('./Relic.json');
+var moment = require('moment');
 
 logger.remove(logger.transports.Console);
 
@@ -33,9 +36,11 @@ bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+    //701827534026965053
     //logger.info(responseList);
     //GetUserCnt();
-    //bot.sendMessage({to: '701815724611469372',message:`Bot has started, with ${serverInfo.members.length} users,${serverInfo.emojis.length} emojis`});  
+    //bot.sendMessage({to: '701815724611469372',message:`Bot has started, with ${serverInfo.members.length} users,${serverInfo.emojis.length} emojis`}); 
+    //bot.sendMessage({to: '701827534026965053',message: '想喇及? <@632244428718997526>'});
 });
 
 
@@ -46,7 +51,7 @@ bot.on("channelCreate", function(channel){
 
 //機器人接收到訊息後
 bot.on('message', function (user, userID, channelID, message, evt) { 
-    console.log('user: ' + user + ' userID: ' + userID);
+    console.log('user: ' + user + ' userID: ' + userID + ' channelID: ' + channelID);
     var prefix = message.substring(0, 1);
     if (prefix == '!') {     
         var args = message.substring(1).split(' ');
@@ -85,7 +90,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
         else
         {
-            bot.sendMessage({to: channelID,message: _DefaultMsg + "<@"+userID+">"});
+            bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+userID+">"});
         }
      }
      //Add JsonList
@@ -215,6 +220,33 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             bot.sendMessage({to: channelID,message: cmd + ' 項目不存在' });
         }
      }
+     else if(prefix == "#")
+     {
+        var args = message.substring(1).split(' ');
+        var cmd = args[0];
+        console.log('prefix:' + prefix + " , cmd:" + cmd)
+        switch(cmd)
+        {
+            case "join":
+                bot.joinVoiceChannel(ConfigJson.DefaultVoiceServer);
+                break;
+            case "leave":
+                bot.leaveVoiceChannel(ConfigJson.DefaultVoiceServer);
+                break;
+            case "mute":;
+                bot.mute( {
+                    serverID: ConfigJson.DefaultVoiceServer,
+                    userID: '688629759550423050'
+                });
+                break;
+        }
+     }
+     else if(prefix == "$")
+     {
+        var args = message.substring(1).split(' ');
+        var cmd = args[0];
+        RelicReminder(1,cmd);
+     }
      else
      {
         console.log(message)
@@ -226,6 +258,19 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             var msgsplit = message.split(" ");
             bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
         }
+        else if(userID == "632244428718997526" && message.indexOf('沒有')>=0){
+            bot.sendMessage({to: channelID,message: '有吧!不要不承認 <@632244428718997526>'});
+        }
+        else if(userID=="632244428718997526" && message == "<:PandaRee:701824934942474281>"){    
+            bot.sendMessage({to: channelID,message: '想喇及? <@632244428718997526>'});
+            bot.addReaction({
+                channelID: channelID,
+                messageID: evt.d.id,
+                reaction: "💋"
+            }, function(err, res) {
+                if (err) { throw err; }
+            });
+        }
      }
 });
 
@@ -234,7 +279,8 @@ bot.on("channelCreate", function(channel){
 });
 
 bot.on('disconnect', function(evt){
-    console.log('可撥鼠離線了');  
+    console.log('disconnect! reconnecting...')
+    bot.connect();
 });
 
 bot.on("reconnecting", function(evt){
@@ -253,24 +299,92 @@ function SaveJson()
     });
 }
 
+
+function SaveRelicJson(){
+    fs.writeFile(relicfileName, JSON.stringify(RelicJson), function writeJSON(err) {
+        if (err) return console.log(err);
+    });
+}
+
 function GetUserCnt(){
     serverInfo.members = Object.keys(bot.servers['701636190482202624'].members);
     serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
 }
 
+console.log(new Date().toLocaleTimeString() + ' ========start========')
 
-let myVar = setInterval(function(){myTimer()},1000);
 
-function myTimer()
+//半小時提醒一次
+var myVar = setInterval(function(){RelicReminder(2)},1800000);
+
+//聖物提醒 (1.紀錄 2.提醒)
+function RelicReminder(Type,Str)
 {
-    var d=new Date();
-    var t=d.toLocaleTimeString();
-    console.log(t);
+    if(Type == 1)
+    {
+        /*
+            藍阿姆 劍1720
+            紅叢林 槍香火杯1837
+            藍阿姆 甲1838
+            藍沙漠 雙杖.甲1847
+            紅KC 水1850
+            紅KC 杯1902
+            藍阿姆 LV2珠1907
+            紅沙漠 秤1943
+            紅叢林 LV2經1945
+            黃沙漠 盾2013
+            紅阿姆 LV2弓2024
+        */
+       let RelicArray = Str.match(/[^\r\n]+/g);
+       
+
+       if(Array.isArray(RelicArray)){
+        RelicArray.forEach(function(item){
+            let ItemArray = item.split(' ');
+            let relicTimeArray = ItemArray[1].split(/([0-9]+)/);
+            let place = ItemArray[0];
+            let relicName = relicTimeArray[0];
+            let time = relicTimeArray[1];
+            let Date = moment.format('YYYY-MM-DD');       
+            console.log("place: " + place + " relicName: " + relicName + " time: " + time);
+            let NewRelicObj = {
+                "relicName":relicName,
+                "place":Date + " "+inputBetweenChar(time,2,":") + ":00",
+                "endDate":time
+             }   
+
+             RelicJson.push(NewRelicObj);
+        });
+       }
+
+       SaveRelicJson();
+    }
+    else
+    {     
+        let Str = "";
+        
+        RelicJson.forEach(function(item){
+            var endtime = moment(item.endDate).fromNow();
+            console.log(endtime)
+            if(endtime.indexOf('minutes') >= 0 && endtime.indexOf('ago')<=0)
+            {
+                if(get_numbers(endtime) <= 30){
+                    Str += item.relicName + " 在" + item.place + "剩 " + get_numbers(endtime) + " 分" + "\n";
+                }
+            }
+        })
+
+        if(Str!="")
+        {
+            bot.sendMessage({to: '701815724611469372',message: Str});
+        }
+    }
 }
 
-// var minute = new Date().getMinutes(),nextRefresh = (15 - (minute % 15)) * 60 * 1000;
+function get_numbers(input) {
+    return input.match(/[0-9]+/g);
+}
 
-// setTimeout( function() 
-// { 
-//     logger.info(bot.username + ' - (' + bot.id + ')' + 'mins: ' + minute);
-// }, nextRefresh );
+function inputBetweenChar(soure,start, newStr){
+    return soure.slice(0, start) + newStr + soure.slice(start);
+}
