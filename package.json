@@ -1,5 +1,5 @@
 {
-	"name": "Michael_BOT",
+	"name": "michaelbot",
 	"version": "1.0.0",
 	"description": "My own Discord bot",
 	"main": "bot.js",
@@ -11,6 +11,7 @@
 		"discord.io": "github:woor/discord.io#gateway_v6",
 		"edit-json-file": "^1.4.0",
 		"moment": "^2.24.0",
+		"weighted-random": "^0.1.0",
 		"winston": "^3.2.1"
 	}
 }

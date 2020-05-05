@@ -28,5 +28,8 @@ node bot
 | +             | Add item       | +可撥 我就可撥 |
 | -             | Remove item    | -可撥 我就可撥 |
 | *             | Show all item  | *可撥         |
-| #             | voiceServer    | #join         |
+| #             | Setting        | #[join]       |
+|               |                | #[leave]      |
+|               |                | #[presence]   |
+|%              | ChangeWeight   | %可撥 我就可撥 1.2|
 | ?             | Show help      |               |
