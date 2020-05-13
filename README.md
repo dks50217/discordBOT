@@ -22,14 +22,16 @@ node bot
 
 ## Method Table
 
-| Prefix        | Method        |  Example   |
-| ------------- |:-------------:| -------------:|
-| !             | Call item      | !可撥         |
-| +             | Add item       | +可撥 我就可撥 |
-| -             | Remove item    | -可撥 我就可撥 |
-| *             | Show all item  | *可撥         |
-| #             | Setting        | #[join]       |
-|               |                | #[leave]      |
-|               |                | #[presence]   |
-|%              | ChangeWeight   | %可撥 我就可撥 1.2|
+| Prefix        | Method        |  Example      |    ResponseExample   |
+| ------------- |:-------------:| -------------:| -------------:   | 
+| !             | Call item      | !可撥         | 我就可撥
+| +             | Add item       | +可撥 我就可撥 | 我就可撥 已加入
+| -             | Remove item    | -可撥 我就可撥 | 我就可撥 已移除
+| *             | Show all item  | *可撥         | 0. 我就可撥
+| #             | Setting        | #[join]       | -
+|               |                | #[leave]      | -
+|               |                | #[presence]   | -
+|               |                | #[tts]        | 語音已開啟/關閉(預設為關閉)
+|               |                | #[rename] OOO     | XXX 已修改 XXX的匿名 為OOO
+|%              | ChangeWeight   | %可撥 我就可撥 1.2| 可撥,我就可撥 已設定為1.2
 | ?             | Show help      |               |

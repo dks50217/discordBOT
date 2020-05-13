@@ -1,17 +1,15 @@
 var Discord = require('discord.io');
 var weightedRandom = require('weighted-random');
+var messageEditor = require('./JS/messageEditor');
 var logger = require('winston');
-var auth = require('./auth.json');
 const fs = require('fs');
-const fileName = './responseList.json';
-const relicfileName = './Relic.json';
-var JsonFile = require(fileName);
-var ConfigJson = require('./config.json');
-var RelicJson = require('./Relic.json');
+var auth = require('./Json/auth.json');
+var ConfigJson = require('./Json/config.json');
+var RelicJson = require('./Json/Relic.json');
+var JsonFile = require('./Json/responseList.json');
 var moment = require('moment');
 var os = require('os');
 var hostname = os.hostname();
-var _sttFlag = false;
 
 logger.remove(logger.transports.Console);
 
@@ -43,7 +41,7 @@ bot.on('ready', function (evt) {
     //701827534026965053
     //logger.info(responseList);
     //bot.sendMessage({to: '701815724611469372',message:`Bot has started, with ${serverInfo.members.length} users,${serverInfo.emojis.length} emojis`}); 
-    //bot.sendMessage({to: '701827534026965053',message: '-p https://www.youtube.com/watch?v=AXWypFP1bJE'});
+    //bot.sendMessage({to: '701827534026965053',message: '我好可撥'});
 });
 
 
@@ -95,7 +93,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     bot.sendMessage({
                         to: channelID,
                         message: randomMsg, 
-                        tts: _sttFlag
+                        tts: ConfigJson.SttFlag
                     });
                 }
             }
@@ -113,7 +111,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      else if(prefix == '+' || prefix == '-')
      {
         let EditArray = message.split(' ');
-        let Regex = /^-(play|next|p|q)/;
+        let Regex = /^-(play|P|next|p|q)/;
 
         if(EditArray[0].match(Regex)){       
             return false;
@@ -137,10 +135,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             }
         })
 
-
-        //let NewValue = EditArray[1]
         let Obj = JsonFile.filter(d=>d.request == keyName)[0]
-
         if(Obj)
         {
             console.log('Obj',Obj)  
@@ -150,101 +145,43 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             {
                 if(prefix == "-")
                 {
-                    Obj.response = Obj.response.filter(msg => msg.message !== NewValue);
-                    bot.sendMessage({
-                        to:channelID,
-                        embed: {
-                            color: 3447003,
-                            description: NewValue +' 已移除'
-                        }
-                    });
+                    Obj.response = messageEditor.RemoveItem(Obj,NewValue)
+                    SendMessagge(channelID,NewValue,3447003,' 已移除')
                 }
                 else
                 {
-                    bot.sendMessage({
-                        to:channelID,
-                        embed: {
-                            color: 3447003,
-                            description: NewValue +' 已存在'
-                        }
-                    });
+                    SendMessagge(channelID,NewValue,3447003,' 已存在')
                 }
             }
             else if(prefix === "+")
             {  
-                let newItem = {weight: 1.0, message: NewValue};
-
-                Obj.response.push(newItem);              
-                bot.sendMessage({
-                    to:channelID,
-                    embed: {
-                        color: 3447003,
-                        description: NewValue +' 已加入'
-                    }
-                });
+                messageEditor.AddItem(Obj,NewValue,false);                
+                SendMessagge(channelID,NewValue,3447003,' 已加入')
             }
             else
             {
-                bot.sendMessage({
-                    to:channelID,
-                    embed: {
-                        color: 15158332,
-                        description: NewValue  +' 不存在，無法移除'
-                    }
-                });
+                SendMessagge(channelID,NewValue,15158332,' 不存在，無法移除')
             }
         }
         else if(prefix == "+")
         {
-            let NewItem = {weight: 1.0, message: NewValue};
-                     
-            let NewObj =  {
-                "GUID": _uuid(),
-                "request": keyName,
-                "response": [],
-                "pictureFlag": false,
-                "tagFlag": false
-              }
-            NewObj.response.push(NewItem);
-            JsonFile.push(NewObj);  
-            bot.sendMessage({
-                to:channelID,
-                embed: {
-                    color: 3447003,
-                    description:  keyName + ' ' + NewValue +' 已加入' 
-                }
-            });
+            messageEditor.AddParent(JsonFile,NewValue);
+            SendMessagge(channelID,keyName + ' ' +NewValue,3447003,'已加入')
         }
         else
         {
-            bot.sendMessage({
-                to:channelID,
-                embed: {
-                    color: 15158332,
-                    description:  keyName + ' ' + '母項不存在，無法移除' 
-                }
-            });
+            SendMessagge(channelID,keyName + ' ' +NewValue,15158332,'母項不存在，無法移除')
         }
         SaveJson();
      }
      else if(prefix == "*")
      {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
-        let Obj = JsonFile.filter(r=>r.request == cmd)[0];
-        let Str = "";
-          
-        if(Obj)
-        {
-            Obj.response.forEach(function(item,index){
-                Str += index + '. ' + item.message +  "("+ item.weight +") \n";
-            })
-
-            bot.sendMessage({to: channelID,message:'```\n' + Str + '```'});
+        let MessageList = messageEditor.ShowList(JsonFile,message);
+        if(MessageList.SuccessFlag){
+            bot.sendMessage({to: channelID,message:'```\n' + MessageList.Str + '```'});
         }
-        else
-        {
-            bot.sendMessage({to: channelID,message: cmd + ' 項目不存在' });
+        else{
+            bot.sendMessage({to: channelID,message: '項目不存在' });
         }
      }
      else if(prefix == "#")
@@ -281,15 +218,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 SetPresence(args[1])
                 break;
             case "rename":
+                    messageEditor.Rename(args,userID,bot);
                 break;
             case "tts":
-                _sttFlag = _sttFlag == true ? false : true;
-                let msg = _sttFlag == true ? "語音已開啟" :"語音已關閉";
-                
-                bot.sendMessage({
-                    to:channelID,
-                    message: "```"+ msg +"```",
-                });
+                ConfigJson.SttFlag = ConfigJson.SttFlag == true ? false : true;
+                let msg = ConfigJson.SttFlag == true ? "語音已開啟" :"語音已關閉";      
+                bot.sendMessage({to:channelID,message: "```"+ msg +"```"});
                 break;
         }
      }
@@ -299,59 +233,15 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      }
      else if(prefix == "%")
      {
-        let successFlag = false;    
-        let args = message.substring(1).split(' ');
-        let Obj = JsonFile.filter(r=>r.request == args[0])[0];   
-        JsonFile.forEach(function(Jitem,Jindex){
-            if(Jitem.request == args[0]){
-                Jitem.response.forEach(function(Ritem,Rindex){
-                    if(Ritem.message == args[1] && isFloat(args[2])){
-                        JsonFile[Jindex].response[Rindex].weight = parseFloat(args[2]);
-                        successFlag = true;
-                    }
-                })
-            }
-        })
-        
-        
-        // if(Obj)
-        // {
-        //     let weightItem = Obj.response.filter(item=>item.message == args[1])
-
-        //     if(weightItem)
-        //     {
-        //         if(isFloat(args[2])){
-        //             weightItem.weights = args[2];
-        //             successFlag = true;
-        //         }
-        //     }
-        // }
-
-        if(successFlag)
+        let weightResult = messageEditor.SetWeight(JsonFile,message)
+        if(weightResult.SuccessFlag)
         {
             SaveJson();
-            
-            bot.sendMessage({
-                to: channelID,
-                embed: {
-                    color: 3447003,
-                    description: args[0] + ',' + args[1] + ' 已變更為 ' + args[2],
-                    footer: {
-                        "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
-                        "text": "hostname: " + hostname
-                    },
-                }
-            });
+            SendMessagge(channelID,'',3447003,weightResult.ParentName + ',' + weightResult.ChildName + ' 已變更為 ' + weightResult.NewWeight)
         }
         else
         {
-            bot.sendMessage({
-                to:channelID,
-                embed: {
-                    color: 15158332,
-                    description: args[1]  + '不存在，無法更新' 
-                }
-            });
+            SendMessagge(channelID,'',15158332,'無法更新')
         }
      }
      else
@@ -365,15 +255,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             var msgsplit = message.split(" ");
             bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
         }
-        else if(userID == "632244428718997526" && message.indexOf('沒有')>=0){
-            bot.sendMessage({to: channelID,message: '有吧!不要不承認 <@632244428718997526>'});
-        }
         else if(userID=="632244428718997526" && message == "<:PandaRee:701824934942474281>"){    
             bot.sendMessage({to: channelID,message: '想喇及? <@632244428718997526>'});
             bot.addReaction({
                 channelID: channelID,
                 messageID: evt.d.id,
-                reaction: "👩‍❤️‍👩"
+                reaction: "💋"
             }, function(err, res) {
                 if (err) { throw err; }
             });
@@ -430,21 +317,6 @@ function SetPresence(args){
         status: 'idle'
     });
 }
-
-function Rename(args,userID)
-{   
-    if(args)
-    {
-        bot.editNickname({
-            serverID: '701636190482202624',
-            userID: userID,
-            nick: args
-        }, function(err){
-            console.log(err);
-        });
-    }
-}
-
 
 console.log(new Date().toLocaleTimeString() + ' ========start========')
 
@@ -544,6 +416,16 @@ function inputBetweenChar(soure,start, newStr){
     return soure.slice(0, start) + newStr + soure.slice(start);
 }
 
-function isFloat (n){
-    return n=== n && n!==(n|0);
+function SendMessagge(channelID,NewValue,Color,Msg){
+    bot.sendMessage({
+        to:channelID,
+        embed: {
+            color: Color,
+            description: NewValue + Msg
+            // footer: {
+            //     "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+            //     "text": "hostname: " + hostname
+            // },
+        }
+    });
 }
