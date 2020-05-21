@@ -56,11 +56,13 @@ bot.on("channelCreate", function(channel){
 bot.on('message', function (user, userID, channelID, message, evt) { 
     console.log('user: ' + user + ' userID: ' + userID + ' channelID: ' + channelID);
     var prefix = message.substring(0, 1);
+    
     if (prefix == '!') {     
         var args = message.substring(1).split(' ');
         var cmd = args[0];
         var randomMsg = "",randomPic = "";         
-        args = args.splice(1);         
+        args = args.splice(1);
+              
         var Obj = JsonFile.filter(r=>r.request == cmd)[0];
         if(Obj)
         {      
@@ -106,7 +108,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
         else
         {
-            bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+userID+">"});
+            let IgnoreWord  = ConfigJson.IgnoreList.some(
+                item => item === cmd
+            );
+
+            if(!IgnoreWord){
+                bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+userID+">"});
+            }    
         }
      }
      //Add JsonList
@@ -182,9 +190,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         if(MessageList.SuccessFlag){
             bot.sendMessage({to: channelID,message:'```\n' + MessageList.Str + '```'});
         }
-        else{
-            bot.sendMessage({to: channelID,message: '項目不存在' });
-        }
+        // else{
+        //     bot.sendMessage({to: channelID,message: '項目不存在' });
+        // }
      }
      else if(prefix == "#")
      {
@@ -220,13 +228,20 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 SetPresence(args[1])
                 break;
             case "rename":
-                    messageEditor.Rename(args,userID,bot);
+                messageEditor.Rename(args,userID,bot);
                 break;
             case "tts":
                 ConfigJson.SttFlag = ConfigJson.SttFlag == true ? false : true;
                 let msg = ConfigJson.SttFlag == true ? "語音已開啟" :"語音已關閉";      
                 bot.sendMessage({to:channelID,message: "```"+ msg +"```"});
                 break;
+            case "ignore":    
+                let rtnObj = messageEditor.SetIgnoreList(args,userID,ConfigJson.IgnoreList);
+                
+                if(rtnObj.IsNew){
+                    ConfigJson.IgnoreList.push(args[1]);
+                }
+                SendMessagge(channelID,rtnObj.Name ,3447003, rtnObj.Msg)
         }
      }
      else if(prefix == "$")

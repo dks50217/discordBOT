@@ -72,5 +72,25 @@ module.exports = {
         //         console.log(err);
         //     });
         // }
+    },
+    SetIgnoreList(args,userID,IgnoreList){
+        let IgnoreObj = {Name:'',IsNew:false,Msg:''};
+        
+        
+        let CreatFlag  = IgnoreList.some(
+            item => item === args[1]
+        );
+        
+        IgnoreObj.Name = args[1];
+        
+        if(CreatFlag){
+            IgnoreObj.Msg = ' 已存在於忽視清單';
+        }
+        else{
+            IgnoreObj.IsNew = true;
+            IgnoreObj.Msg = ' 已加入忽視清單';
+        }
+
+        return IgnoreObj;
     }
 };

@@ -1,5 +1,6 @@
 {
     "DefaultMsg": "哩西勒公三小!? ",
     "DefaultVoiceServer":"701636190482202629",
-    "SttFlag":false
+    "SttFlag":false,
+    "IgnoreList":["P","next","n","p","q"]
 }
