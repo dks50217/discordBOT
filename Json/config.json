@@ -1,5 +1,6 @@
 {
-    "DefaultMsg": "哩西勒公三小!? ",
+    "DefaultMsg": "要不要跟我一起去釣蝦 ",
+    "DefaultMsgTagFlag":true,
     "DefaultVoiceServer":"701636190482202629",
     "SttFlag":false,
     "IgnoreList":["P","next","n","p","q"]

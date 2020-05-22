@@ -40,17 +40,14 @@ bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+    GetBaseInfo()
     //701827534026965053
-    //logger.info(responseList);
-    //bot.sendMessage({to: '701815724611469372',message:`Bot has started, with ${serverInfo.members.length} users,${serverInfo.emojis.length} emojis`}); 
-    //bot.sendMessage({to: '701827534026965053',message: '我好可撥'});
 });
 
 
 bot.on("channelCreate", function(channel){
     console.log(`channelCreate: ${channel}`);
 });
-
 
 //機器人接收到訊息後
 bot.on('message', function (user, userID, channelID, message, evt) { 
@@ -102,9 +99,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 }
             }
 
-            if(randomMsg == "夜裡晶珂"){
-                bot.uploadFile({to: channelID,file:'./Image/1587170283732.jpg'});         
-            }
+            // if(randomMsg == "夜裡晶珂"){
+            //     bot.uploadFile({to: channelID,file:'./Image/1587170283732.jpg'});         
+            // }
         }
         else
         {
@@ -112,8 +109,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 item => item === cmd
             );
 
-            if(!IgnoreWord){
-                bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+userID+">"});
+            if(!IgnoreWord){        
+                if(ConfigJson.DefaultMsgTagFlag){
+                    var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
+                    bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
+                }
+                else{
+                    bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+userID+">"});
+                }
             }    
         }
      }
@@ -242,6 +245,16 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     ConfigJson.IgnoreList.push(args[1]);
                 }
                 SendMessagge(channelID,rtnObj.Name ,3447003, rtnObj.Msg)
+                break;
+            case "monkey":
+                ConfigJson.DefaultMsgTagFlag = ConfigJson.DefaultMsgTagFlag == true ? false : true;
+                msg = ConfigJson.DefaultMsgTagFlag == true ? "預設回復已開啟" :"預設回復已關閉";      
+                bot.sendMessage({to:channelID,message: "```"+ msg +"```"});
+                break;
+            case "reply":
+                ConfigJson.DefaultMsg = args[1];
+                bot.sendMessage({to:channelID,message: "```預設回復已更改為 "+ args[1] +"```"});
+                break;
         }
      }
      else if(prefix == "$")
@@ -317,8 +330,8 @@ function SaveRelicJson(){
 }
 
 function GetBaseInfo(){
-    serverInfo.members = Object.keys(bot.servers['701636190482202624'].members);
-    serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
+    serverInfo.members = Object.keys(bot.servers['574558233881214977'].members);
+    //serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
 }
 
 function SetPresence(args){
