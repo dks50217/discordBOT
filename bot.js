@@ -281,9 +281,11 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         if(message.indexOf('笑死') >= 0){
             bot.sendMessage({to: channelID,message: 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'});
         }
-        else if(message.indexOf('ㄌㄐ')>=0 && prefix !="*"){
-            var msgsplit = message.split(" ");
-            bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
+        else if(message.indexOf('soga')>=0 && prefix !="*"){
+            var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
+            bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
+            // var msgsplit = message.split(" ");
+            // bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
         }
         else if(userID=="632244428718997526" && message == "<:PandaRee:701824934942474281>"){    
             bot.sendMessage({to: channelID,message: '想喇及? <@632244428718997526>'});
