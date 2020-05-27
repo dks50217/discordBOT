@@ -72,10 +72,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 
 
                 var selectionIndex = weightedRandom(weights);
-                randomMsg = Obj.response[selectionIndex].message;
+                
+                if(Obj.response[selectionIndex]!=undefined){
+                    randomMsg = Obj.response[selectionIndex].message;
+                }
+                else{
+                    return;
+                }
 
-                //randomMsg = Obj.response[Math.floor(Math.random() * Obj.response.length)].message; 
- 
                 if(Obj.pictureFlag)
                 {
                     randomPic = Obj.url[Math.floor(Math.random() * Obj.url.length)]; 
@@ -341,12 +345,11 @@ function SetPresence(args){
     let name = args == undefined ? "可撥的老鼠": args
     
     bot.setPresence({
-        idle_since: Date.now() - (1000 * 60 * 60),
+        //idle_since: Date.now() - (1000 * 60 * 60),
         game:{
             name: name,
-            type:1
-        },
-        status: 'idle'
+            type:2
+        }
     });
 }
 
