@@ -282,10 +282,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      {
         console.log(message)
         
-        if(message.indexOf('笑死') >= 0){
-            bot.sendMessage({to: channelID,message: 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'});
-        }
-        else if(message.indexOf('soga')>=0 && prefix !="*"){
+        // if(message.indexOf('笑死') >= 0){
+        //     bot.sendMessage({to: channelID,message: 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'});
+        // }
+        if(message.indexOf('soga')>=0 && prefix !="*"){
             var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
             bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
             // var msgsplit = message.split(" ");
