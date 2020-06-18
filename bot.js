@@ -251,9 +251,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 SendMessagge(channelID,rtnObj.Name ,3447003, rtnObj.Msg)
                 break;
             case "monkey":
+            case "mouse":
                 ConfigJson.DefaultMsgTagFlag = ConfigJson.DefaultMsgTagFlag == true ? false : true;
-                msg = ConfigJson.DefaultMsgTagFlag == true ? "預設回復已開啟" :"預設回復已關閉";      
-                bot.sendMessage({to:channelID,message: "```"+ msg +"```"});
+                let msg2 = ConfigJson.DefaultMsgTagFlag == true ? "預設回復已開啟" :"預設回復已關閉";      
+                bot.sendMessage({to:channelID,message: "```"+ msg2 +"```"});
                 break;
             case "reply":
                 ConfigJson.DefaultMsg = args[1];
@@ -263,7 +264,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      }
      else if(prefix == "$")
      {
-        RelicReminder(1,message.replace('$',''),channelID);
+        //RelicReminder(1,message.replace('$',''),channelID);
      }
      else if(prefix == "%")
      {
@@ -282,15 +283,15 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      {
         console.log(message)
         
-        // if(message.indexOf('笑死') >= 0){
-        //     bot.sendMessage({to: channelID,message: 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'});
-        // }
-        if(message.indexOf('soga')>=0 && prefix !="*"){
-            var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
-            bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
-            // var msgsplit = message.split(" ");
-            // bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
+        if(message.indexOf('吵死') >= 0){
+            bot.sendMessage({to: channelID,message: '你好兇 ' + "<@"+ userID +">"});
         }
+        // else if(message.indexOf('soga')>=0 && prefix !="*"){
+        //     var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
+        //     bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
+        //     // var msgsplit = message.split(" ");
+        //     // bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
+        // }
         else if(userID=="632244428718997526" && message == "<:PandaRee:701824934942474281>"){    
             bot.sendMessage({to: channelID,message: '想喇及? <@632244428718997526>'});
             bot.addReaction({
@@ -336,8 +337,8 @@ function SaveRelicJson(){
 }
 
 function GetBaseInfo(){
-    serverInfo.members = Object.keys(bot.servers['574558233881214977'].members);
-    //serverInfo.emojis = Object.keys(bot.servers['701636190482202624'].emojis);
+    //serverInfo.members = Object.keys(bot.servers['574558233881214977'].members);
+    serverInfo.members = Object.keys(bot.servers['452119391648219137'].members);
 }
 
 function SetPresence(args){
@@ -356,7 +357,7 @@ function SetPresence(args){
 console.log(new Date().toLocaleTimeString() + ' ========start========')
 
 //半小時提醒一次
-var myVar = setInterval(function(){RelicReminder(2)},1200000);
+//var myVar = setInterval(function(){RelicReminder(2)},1200000);
 
 
 //聖物提醒 (1.紀錄 2.提醒)
@@ -403,9 +404,7 @@ function RelicReminder(Type,Str,channelID)
        }
 
        SaveRelicJson();
-       
-
-    
+        
         bot.sendMessage({
             to: channelID,
             embed: {

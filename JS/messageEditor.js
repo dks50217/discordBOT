@@ -62,10 +62,13 @@ module.exports = {
     Rename:function(args,userID,bot){
        
         console.log('args',args)
-        console.log('args',bot.servers['701636190482202624'].members)
+        console.log('args',bot.servers['452119391648219137'].members)
+
+
+
         // if(args){
         //     bot.editNickname({
-        //         serverID: '701636190482202624',
+        //         serverID: '452119391648219137',
         //         userID: userID,
         //         nick: args
         //     }, function(err){
