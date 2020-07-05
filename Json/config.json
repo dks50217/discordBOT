@@ -3,5 +3,8 @@
     "DefaultMsgTagFlag":true,
     "DefaultVoiceServer":"701636190482202629",
     "SttFlag":false,
-    "IgnoreList":["P","next","n","p","q"]
+    "IgnoreList":["P","next","n","p","q"],
+    "RelicChannel":"701815724611469372",
+    "MainServer":"452119391648219137",
+    "IgnoreAddList":["9"]
 }

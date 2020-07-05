@@ -1,6 +1,7 @@
 var Discord = require('discord.io');
 var weightedRandom = require('weighted-random');
 var messageEditor = require('./JS/messageEditor');
+var relicReminder = require('./JS/relicReminder');
 var logger = require('winston');
 const fs = require('fs');
 const fileName = './Json/responseList.json';
@@ -102,10 +103,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     });
                 }
             }
-
-            // if(randomMsg == "夜裡晶珂"){
-            //     bot.uploadFile({to: channelID,file:'./Image/1587170283732.jpg'});         
-            // }
         }
         else
         {
@@ -129,8 +126,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      {
         let EditArray = message.split(' ');
         let Regex = /^-(play|P|next|p|q)/;
+        
+        let IgnoreFlag  = ConfigJson.IgnoreAddList.some(
+            item => EditArray[0].startsWith(item)
+        );
 
-        if(EditArray[0].match(Regex)){       
+        if(EditArray[0].match(Regex) || IgnoreFlag){       
             return false;
         }
 
@@ -197,9 +198,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         if(MessageList.SuccessFlag){
             bot.sendMessage({to: channelID,message:'```\n' + MessageList.Str + '```'});
         }
-        // else{
-        //     bot.sendMessage({to: channelID,message: '項目不存在' });
-        // }
      }
      else if(prefix == "#")
      {
@@ -210,9 +208,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         switch(cmd)
         {
             case "join":
-                //bot.joinVoiceChannel(ConfigJson.DefaultVoiceServer);
                 bot.joinVoiceChannel(ConfigJson.DefaultVoiceServer, (err) => {
-                    //if(err) return console.log(err);
                     bot.getAudioContext(ConfigJson.DefaultVoiceServer, (err, stream) => {
                         if(err) return console.log(err);
                         playing = fs.createReadStream('mouse.mp3');                        
@@ -244,7 +240,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 break;
             case "ignore":    
                 let rtnObj = messageEditor.SetIgnoreList(args,userID,ConfigJson.IgnoreList);
-                
                 if(rtnObj.IsNew){
                     ConfigJson.IgnoreList.push(args[1]);
                 }
@@ -259,6 +254,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             case "reply":
                 ConfigJson.DefaultMsg = args[1];
                 bot.sendMessage({to:channelID,message: "```預設回復已更改為 "+ args[1] +"```"});
+                break;
+            case "ignoreAdd":
+                let rtnAddObj = messageEditor.SetIgnoreList(args,userID,ConfigJson.IgnoreAddList);
+                if(rtnAddObj.IsNew){
+                    ConfigJson.IgnoreAddList.push(args[1]);
+                }
+                SendMessagge(channelID,rtnAddObj.Name ,3447003, rtnAddObj.Msg)
                 break;
         }
      }
@@ -281,17 +283,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
      }
      else
      {
-        console.log(message)
-        
         if(message.indexOf('吵死') >= 0){
             bot.sendMessage({to: channelID,message: '你好兇 ' + "<@"+ userID +">"});
         }
-        // else if(message.indexOf('soga')>=0 && prefix !="*"){
-        //     var rtnItem =  serverInfo.members[Math.floor(Math.random() * serverInfo.members.length)];
-        //     bot.sendMessage({to: channelID,message: ConfigJson.DefaultMsg + "<@"+rtnItem+">"});
-        //     // var msgsplit = message.split(" ");
-        //     // bot.sendMessage({to: channelID,message: '說你呢! <@632244428718997526>'});
-        // }
         else if(userID=="632244428718997526" && message == "<:PandaRee:701824934942474281>"){    
             bot.sendMessage({to: channelID,message: '想喇及? <@632244428718997526>'});
             bot.addReaction({
@@ -318,12 +312,7 @@ bot.on("reconnecting", function(evt){
     console.log('client tries to reconnect to the WebSocket');  
 });
 
-function _uuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
-}
-
-function SaveJson()
-{
+function SaveJson(){
     fs.writeFile(fileName, JSON.stringify(JsonFile), function writeJSON(err) {
         if (err) return console.log(err);
     });
@@ -337,8 +326,7 @@ function SaveRelicJson(){
 }
 
 function GetBaseInfo(){
-    //serverInfo.members = Object.keys(bot.servers['574558233881214977'].members);
-    serverInfo.members = Object.keys(bot.servers['452119391648219137'].members);
+    serverInfo.members = Object.keys(bot.servers[ConfigJson.MainServer].members);
 }
 
 function SetPresence(args){
@@ -359,95 +347,34 @@ console.log(new Date().toLocaleTimeString() + ' ========start========')
 //半小時提醒一次
 //var myVar = setInterval(function(){RelicReminder(2)},1200000);
 
-
 //聖物提醒 (1.紀錄 2.提醒)
 function RelicReminder(Type,Str,channelID)
 {
     if(Type == 1)
     {
-        /*
-            藍阿姆 劍1720
-            紅叢林 槍香火杯1837
-            藍阿姆 甲1838
-            藍沙漠 雙杖.甲1847
-            紅KC 水1850
-            紅KC 杯1902
-            藍阿姆 LV2珠1907
-            紅沙漠 秤1943
-            紅叢林 LV2經1945
-            黃沙漠 盾2013
-            紅阿姆 LV2弓2024
-        */
-       
-       let RelicArray = Str.match(/[^\r\n]+/g);
-       let ImportCnt = 0;
-
-       if(Array.isArray(RelicArray)){
-        RelicArray.forEach(function(item){
-            console.log(item);
-            ImportCnt++
-            let ItemArray = item.split(' ');
-            let relicTimeArray = ItemArray[1].split(/([0-9]+)/);
-            let place = ItemArray[0];
-            let relicName = relicTimeArray[0];
-            let time = relicTimeArray[1];
-            let Date = moment().format('YYYY-MM-DD');       
-            console.log("place: " + place + " relicName: " + relicName + " time: " + time);
-            let NewRelicObj = {
-                "relicName":relicName,
-                "place":place,
-                "endDate": Date + " "+ inputBetweenChar(time,2,":") + ":00"
-             }   
-
-             RelicJson.push(NewRelicObj);
-        });
-       }
-
-       SaveRelicJson();
-        
-        bot.sendMessage({
-            to: channelID,
-            embed: {
-                color: 3447003,
-                description: '共新增 ' + ImportCnt + ' 項',
-                footer: {
-                    "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
-                    "text": "hostname: " + hostname
-                },
-            }
-        });
-    }
-    else
-    {     
-        let Str = "";
-        
-        RelicJson.forEach(function(item){
-            var endtime = moment(item.endDate).fromNow();
-            console.log(endtime)
-            if(endtime.indexOf('minutes') >= 0 && endtime.indexOf('ago')<=0)
-            {
-                if(get_numbers(endtime) <= 30){
-                    Str += item.relicName + " 在" + item.place + "剩 " + get_numbers(endtime) + " 分" + "\n";
+        let importCnt = relicReminder.AddRelicList(Str,RelicJson);
+        if(importCnt>0){
+            SaveRelicJson();
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 3447003,
+                    description: '共新增 ' + ImportCnt + ' 項',
+                    footer: {
+                        "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+                        "text": "hostname: " + hostname
+                    },
                 }
-            }
-            else if(endtime.indexOf('ago')>=0){
-
-            }
-        })
-
-        if(Str!="")
-        {
-            bot.sendMessage({to: '701815724611469372',message: Str});
+            });
         }
     }
-}
-
-function get_numbers(input) {
-    return input.match(/[0-9]+/g);
-}
-
-function inputBetweenChar(soure,start, newStr){
-    return soure.slice(0, start) + newStr + soure.slice(start);
+    else
+    {           
+        relicListStr = relicReminder.GetRelicList(RelicJson) 
+        if(relicListStr!=""){
+            bot.sendMessage({to: ConfigJson.RelicChannel,message: Str});
+        }
+    }
 }
 
 function SendMessagge(channelID,NewValue,Color,Msg){
@@ -456,10 +383,6 @@ function SendMessagge(channelID,NewValue,Color,Msg){
         embed: {
             color: Color,
             description: NewValue + Msg
-            // footer: {
-            //     "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
-            //     "text": "hostname: " + hostname
-            // },
         }
     });
 }
