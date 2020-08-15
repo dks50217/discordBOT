@@ -13,7 +13,6 @@ module.exports = {
             "pictureFlag": false,
             "tagFlag": false
         }
-        //NewParentObj.response = module.exports.AddItem(NewParentObj,NewValue,true);
         JsonFile.push(module.exports.AddItem(NewParentObj,NewValue,true));
     },
     RemoveItem: function(Obj,NewValue) {
@@ -59,13 +58,17 @@ module.exports = {
         }
         return rtnObject;
     },
+    ShowParentList:function(JsonFile){
+        let rtnStr = ''; 
+        JsonFile.forEach(function(item,index){
+            rtnStr += index + '. ' + "!" + item.request + "\n";
+        })
+        return rtnStr;
+    },
     Rename:function(args,userID,bot){
-       
+        //TODO Rename function
         console.log('args',args)
         console.log('args',bot.servers['452119391648219137'].members)
-
-
-
         // if(args){
         //     bot.editNickname({
         //         serverID: '452119391648219137',
@@ -78,14 +81,10 @@ module.exports = {
     },
     SetIgnoreList(args,userID,IgnoreList){
         let IgnoreObj = {Name:'',IsNew:false,Msg:''};
-        
-        
         let CreatFlag  = IgnoreList.some(
             item => item === args[1]
         );
-        
-        IgnoreObj.Name = args[1];
-        
+        IgnoreObj.Name = args[1]; 
         if(CreatFlag){
             IgnoreObj.Msg = ' 已存在於忽視清單';
         }
@@ -93,7 +92,6 @@ module.exports = {
             IgnoreObj.IsNew = true;
             IgnoreObj.Msg = ' 已加入忽視清單';
         }
-
         return IgnoreObj;
     }
 };

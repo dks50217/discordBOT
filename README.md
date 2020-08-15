@@ -34,7 +34,9 @@ node bot
 |               |                | #[tts]        | 語音已開啟/關閉(預設為關閉)
 |               |                | #[rename] OOO     | XXX 已修改 XXX的匿名 為OOO
 |               |                | #[ignore] OOO     | XXX 已加入忽略清單
-|               |                | #[monkey]         | 預設回復已開啟/關閉(預設為開啟)
-|               |                | #[replay] OOO     | 預設回復已更改為OOO
+|               |                | #[ignoreAdd] OOO  | XXX 已加入忽略清單
+|               |                | #[monkey/mouse]         | 預設回復已開啟/關閉(預設為開啟)
+|               |                | #[reply] OOO     | 預設回復已更改為OOO
+|               |                | #[allParent]     | 顯示全部父項
 |%              | ChangeWeight   | %可撥 我就可撥 1.2| 可撥,我就可撥 已設定為1.2
 | ?             | Show help      |               |

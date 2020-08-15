@@ -41,8 +41,8 @@ bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+    logger.info(`Host:${os.hostname()}`);
     GetBaseInfo()
-    //701827534026965053
 });
 
 
@@ -261,6 +261,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     ConfigJson.IgnoreAddList.push(args[1]);
                 }
                 SendMessagge(channelID,rtnAddObj.Name ,3447003, rtnAddObj.Msg)
+                break;
+            case "allParent":
+                let rtnParentStr = messageEditor.ShowParentList(JsonFile);
+                if(rtnParentStr!=''){
+                    bot.sendMessage({to:channelID,message:'```\n' + rtnParentStr + '```'});
+                }
                 break;
         }
      }

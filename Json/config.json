@@ -1,8 +1,9 @@
 {
-    "DefaultMsg": "不會用不要用 ",
-    "DefaultMsgTagFlag":true,
+    "DefaultMsg": "哩西勒公三小??",
+    "DefaultMsgTagFlag":false,
     "DefaultVoiceServer":"701636190482202629",
     "SttFlag":false,
+    "CommanChannel":"735296183961911413",
     "IgnoreList":["P","next","n","p","q"],
     "RelicChannel":"701815724611469372",
     "MainServer":"452119391648219137",
